@@ -1,0 +1,265 @@
+{
+  "bio": {
+    "name": "അറയാനി",
+    "polaroidName": "Alan Saji",
+    "avatar": "images/hd1.png",
+    "headline": "A vibe coder & web developer exploring AI",
+    "cursiveSubtitle": "Making the web feel alive.",
+    "description": "Turning bold ideas into real products people use.",
+    "email": "hey.alansaji@gmail.com",
+    "linkedinCta": "https://linkedin.com/in/alansaji"
+  },
+  "socials": {
+    "github": "https://github.com/alansaji",
+    "twitter": "https://twitter.com/alansaji",
+    "linkedin": "https://linkedin.com/in/alansaji",
+    "instagram": "https://instagram.com/alansaji"
+  },
+  "projects": [
+    {
+      "id": "project-kadi",
+      "title": "KADI",
+      "link": "https://github.com/alansaji/kadi",
+      "bannerImage": "images/kadi.png",
+      "viral": true,
+      "colorClass": "pink-marker",
+      "bgColor": "rgba(255, 104, 175, 0.1)",
+      "tags": [
+        {
+          "name": "Web Tool",
+          "color": "#2563eb",
+          "icon": "globe"
+        },
+        {
+          "name": "React",
+          "color": "#61DAFB",
+          "icon": "layers"
+        }
+      ],
+      "bullets": [
+        "An inter-bakery connectivity platform that helps customers instantly locate available snacks from nearby bakeries, eliminating out-of-stock frustrations.",
+        "Achieved massive reach with <span class=\"bold-slate\">200K+ visitors</span>.",
+        "Grew entirely through organic sharing as a viral project."
+      ]
+    },
+    {
+      "id": "project-finance",
+      "title": "Financial Analysis System",
+      "link": "https://github.com/alansaji/finance-analysis",
+      "bannerImage": "images/finance.png",
+      "viral": true,
+      "colorClass": "yellow-marker",
+      "bgColor": "rgba(255, 233, 110, 0.1)",
+      "tags": [
+        {
+          "name": "Python",
+          "color": "#3776AB",
+          "icon": "triangle"
+        },
+        {
+          "name": "AI / ML",
+          "color": "#d946ef",
+          "icon": "sparkle"
+        }
+      ],
+      "bullets": [
+        "AI-powered platform for analyzing financial data, generating insights, detecting trends, and producing automated reports.",
+        "Features predictive modeling and statistical regression overlays.",
+        "Bridges the gap between raw ledger databases and visual executive summaries."
+      ]
+    },
+    {
+      "id": "project-portfolio",
+      "title": "Portfolio Website",
+      "link": "https://github.com/alansaji/portfolio",
+      "bannerImage": "images/portfolio.png",
+      "viral": false,
+      "colorClass": "blue-marker",
+      "bgColor": "rgba(109, 132, 255, 0.1)",
+      "tags": [
+        {
+          "name": "Web App",
+          "color": "#22c55e",
+          "icon": "globe"
+        },
+        {
+          "name": "Performance",
+          "color": "#61DAFB",
+          "icon": "layers"
+        }
+      ],
+      "bullets": [
+        "Minimalist, ultra-responsive web application representing developer credentials.",
+        "Built exact replicated styles of premium designs.",
+        "Fully vanilla frontend codebase loading in milliseconds with zero dependencies."
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "id": "exp-gemini",
+      "role": "Google Gemini Student Ambassador",
+      "company": "Google Developer Advocacy Team",
+      "dateRange": "2023 - PRESENT",
+      "bullets": [
+        "Community building around AI technologies and Google Gemini",
+        "Organizing and conducting AI workshops for students",
+        "Technical advocacy and feedback collection for Gemini API improvements",
+        "Mentoring students on AI project development and prompt engineering"
+      ]
+    },
+    {
+      "id": "exp-iste",
+      "role": "ISTE Student Member",
+      "company": "Indian Society for Technical Education",
+      "dateRange": "2022 - PRESENT",
+      "bullets": [
+        "Participation in technical events and conferences",
+        "Collaboration on innovation initiatives within the ISTE community",
+        "Contributing to technical discussions and knowledge sharing"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "id": "edu-btech",
+      "degree": "B.Tech in Computer Science and Engineering",
+      "institution": "University of Kerala, India",
+      "dateRange": "2022 - Present",
+      "score": "CGPA: 8.7/10",
+      "iconType": "degree",
+      "color": "pink"
+    },
+    {
+      "id": "edu-highschool",
+      "degree": "Higher Secondary Education",
+      "institution": "Saint Thomas School, Kerala",
+      "dateRange": "2020 - 2022",
+      "score": "Percentage: 92%",
+      "iconType": "school",
+      "color": "blue"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Languages",
+      "list": [
+        {
+          "name": "JavaScript",
+          "color": "#F7DF1E",
+          "icon": "layers"
+        },
+        {
+          "name": "TypeScript",
+          "color": "#3178C6",
+          "icon": "layers"
+        },
+        {
+          "name": "Python",
+          "color": "#3776AB",
+          "icon": "layers"
+        },
+        {
+          "name": "SQL",
+          "color": "#4169E1",
+          "icon": "layers"
+        }
+      ]
+    },
+    {
+      "category": "Frontend",
+      "list": [
+        {
+          "name": "React",
+          "color": "#61DAFB",
+          "icon": "layers"
+        },
+        {
+          "name": "Next.js",
+          "color": "#000000",
+          "icon": "layers"
+        },
+        {
+          "name": "HTML5 / CSS3",
+          "color": "#E34F26",
+          "icon": "layers"
+        },
+        {
+          "name": "Tailwind CSS",
+          "color": "#38BDF8",
+          "icon": "layers"
+        }
+      ]
+    },
+    {
+      "category": "Backend",
+      "list": [
+        {
+          "name": "Node.js",
+          "color": "#339933",
+          "icon": "layers"
+        },
+        {
+          "name": "Express.js",
+          "color": "#000000",
+          "icon": "layers"
+        },
+        {
+          "name": "REST APIs",
+          "color": "#3b82f6",
+          "icon": "globe"
+        }
+      ]
+    },
+    {
+      "category": "Databases",
+      "list": [
+        {
+          "name": "MongoDB",
+          "color": "#47A248",
+          "icon": "layers"
+        },
+        {
+          "name": "MySQL",
+          "color": "#00758F",
+          "icon": "layers"
+        },
+        {
+          "name": "PostgreSQL",
+          "color": "#4169E1",
+          "icon": "layers"
+        }
+      ]
+    },
+    {
+      "category": "Tools & Other",
+      "list": [
+        {
+          "name": "Git",
+          "color": "#F05032",
+          "icon": "layers"
+        },
+        {
+          "name": "GitHub",
+          "color": "#000000",
+          "icon": "layers"
+        },
+        {
+          "name": "Docker",
+          "color": "#0DB7ED",
+          "icon": "layers"
+        },
+        {
+          "name": "VS Code",
+          "color": "#007ACC",
+          "icon": "layers"
+        },
+        {
+          "name": "Gemini AI",
+          "color": "#8E75B2",
+          "icon": "sparkle"
+        }
+      ]
+    }
+  ]
+}

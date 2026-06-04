@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alan Saji - Portfolio Admin Console</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="index.css">
+  <style>
+    /* Custom style overrides to perfect the Admin interface spacing */
+    .admin-container {
+      max-width: 64rem;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 10rem 1.5rem;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      padding: 1rem 2rem;
+      border-radius: 1.5rem;
+    }
+    .admin-sec-title {
+      font-weight: 900;
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .admin-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .sub-list-card {
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.4);
+      margin-top: 0.75rem;
+    }
+    .tag-editor-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .skill-editor-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .flex-gap-2 {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Noise Texture Background -->
+  <div class="bg-grid"></div>
+
+  <!-- Login Password Overlay -->
+  <div class="admin-login-overlay" id="login-overlay">
+    <div class="admin-login-card">
+      <div style="margin-bottom: 1.5rem;">
+        <span class="bg-gradient-text" style="font-weight: 900; font-size: 1.75rem; letter-spacing: -0.025em; text-transform: uppercase;">
+          Alan Saji
+        </span>
+        <p style="color: var(--muted); font-size: 0.875rem; margin-top: 0.25rem; font-weight: 500;">ADMIN CONTROL PANEL</p>
+      </div>
+      <form id="login-form">
+        <div class="admin-input-group">
+          <label for="admin-password">Enter Password</label>
+          <input type="password" id="admin-password" class="admin-input" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="admin-btn admin-btn-primary">
+          Authenticate
+        </button>
+        <p id="login-error" style="color: #ef4444; font-size: 0.875rem; margin-top: 1rem; font-weight: 600; display: none;">
+          Incorrect Password. Please try again.
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Dashboard Container -->
+  <div class="admin-container">
+    
+    <!-- Top Bar -->
+    <header class="admin-header">
+      <div>
+        <h1 style="font-size: 1.25rem; font-weight: 900; letter-spacing: -0.025em; text-transform: uppercase;">
+          <span class="bg-gradient-text">Console</span>
+        </h1>
+        <span style="font-size: 0.875rem; color: var(--muted); font-weight: 600;">Managing Alan Saji's Portfolio</span>
+      </div>
+      <div class="flex-gap-2">
+        <a href="/" target="_blank" class="admin-btn admin-btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem; width: auto;">
+          View Website
+        </a>
+        <button class="admin-btn admin-btn-primary" id="logout-btn" style="padding: 0.5rem 1rem; font-size: 0.875rem; width: auto;">
+          Exit
+        </button>
+      </div>
+    </header>
+
+    <!-- Tab navigation Docks -->
+    <nav class="admin-tabs-nav">
+      <button class="admin-tab-btn active" data-tab="general">General & Bio</button>
+      <button class="admin-tab-btn" data-tab="projects">Projects</button>
+      <button class="admin-tab-btn" data-tab="experience">Experience</button>
+      <button class="admin-tab-btn" data-tab="education">Education</button>
+      <button class="admin-tab-btn" data-tab="skills">Skills</button>
+    </nav>
+
+    <!-- General Tab Content -->
+    <div class="admin-tab-content active" id="tab-general">
+      <div class="soft-card" style="padding: 2rem;">
+        <h2 class="admin-sec-title">Personal Biography Details</h2>
+        <div class="admin-grid-2">
+          <div class="admin-input-group">
+            <label for="bio-name">Developer Name (Main & Header)</label>
+            <input type="text" id="bio-name" class="admin-input">
+          </div>
+          <div class="admin-input-group">
+            <label for="bio-polaroid-name">Polaroid Display Name</label>
+            <input type="text" id="bio-polaroid-name" class="admin-input">
+          </div>
+        </div>
+        <div class="admin-input-group">
+          <label for="bio-avatar">Avatar Image URL/Path</label>
+          <input type="text" id="bio-avatar" class="admin-input">
+        </div>
+        <div class="admin-input-group">
+          <label for="bio-headline">Headline Badge</label>
+          <input type="text" id="bio-headline" class="admin-input">
+        </div>
+        <div class="admin-input-group">
+          <label for="bio-cursive">Handwriting Subtitle</label>
+          <input type="text" id="bio-cursive" class="admin-input">
+        </div>
+        <div class="admin-input-group">
+          <label for="bio-desc">Short Hero Description</label>
+          <textarea id="bio-desc" class="admin-input" rows="3" style="resize: vertical;"></textarea>
+        </div>
+        <div class="admin-grid-2">
+          <div class="admin-input-group">
+            <label for="bio-email">Email Address</label>
+            <input type="email" id="bio-email" class="admin-input">
+          </div>
+          <div class="admin-input-group">
+            <label for="bio-linkedin-cta">LinkedIn Message CTA Link</label>
+            <input type="text" id="bio-linkedin-cta" class="admin-input">
+          </div>
+        </div>
+
+        <h2 class="admin-sec-title" style="margin-top: 3rem;">Social Profiles</h2>
+        <div class="admin-grid-2">
+          <div class="admin-input-group">
+            <label for="social-github">GitHub Profile URL</label>
+            <input type="text" id="social-github" class="admin-input">
+          </div>
+          <div class="admin-input-group">
+            <label for="social-linkedin">LinkedIn Profile URL</label>
+            <input type="text" id="social-linkedin" class="admin-input">
+          </div>
+          <div class="admin-input-group">
+            <label for="social-twitter">Twitter Profile URL</label>
+            <input type="text" id="social-twitter" class="admin-input">
+          </div>
+          <div class="admin-input-group">
+            <label for="social-instagram">Instagram Profile URL</label>
+            <input type="text" id="social-instagram" class="admin-input">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projects Tab Content -->
+    <div class="admin-tab-content" id="tab-projects">
+      <div id="projects-list-container">
+        <!-- Rendered Dynamically -->
+      </div>
+      <button class="admin-btn admin-btn-secondary" id="add-project-btn" style="margin-top: 1rem;">
+        + Add New Project Card
+      </button>
+    </div>
+
+    <!-- Experience Tab Content -->
+    <div class="admin-tab-content" id="tab-experience">
+      <div id="experience-list-container">
+        <!-- Rendered Dynamically -->
+      </div>
+      <button class="admin-btn admin-btn-secondary" id="add-exp-btn" style="margin-top: 1rem;">
+        + Add Experience Timeline Event
+      </button>
+    </div>
+
+    <!-- Education Tab Content -->
+    <div class="admin-tab-content" id="tab-education">
+      <div id="education-list-container">
+        <!-- Rendered Dynamically -->
+      </div>
+      <button class="admin-btn admin-btn-secondary" id="add-edu-btn" style="margin-top: 1rem;">
+        + Add Education Card
+      </button>
+    </div>
+
+    <!-- Skills Tab Content -->
+    <div class="admin-tab-content" id="tab-skills">
+      <div id="skills-list-container">
+        <!-- Rendered Dynamically -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Floating Unsaved Changes indicator Bar -->
+  <div class="admin-save-bar" id="save-bar">
+    <div class="admin-save-status" id="save-status-text">
+      You have unsaved changes.
+    </div>
+    <div class="admin-save-actions">
+      <button class="admin-save-btn discard" id="discard-btn">Discard</button>
+      <button class="admin-save-btn save" id="save-btn">Save Changes</button>
+    </div>
+  </div>
+
+  <!-- Core Dashboard Handler Script -->
+  <script>
+    let localDatabaseState = null;
+    let originalDatabaseCopy = null;
+    let activeToken = localStorage.getItem('admin_token') || '';
+
+    // Elements
+    const loginOverlay = document.getElementById('login-overlay');
+    const loginForm = document.getElementById('login-form');
+    const loginPassword = document.getElementById('admin-password');
+    const loginError = document.getElementById('login-error');
+    const logoutBtn = document.getElementById('logout-btn');
+    const saveBar = document.getElementById('save-bar');
+    const saveStatusText = document.getElementById('save-status-text');
+    const saveBtn = document.getElementById('save-btn');
+    const discardBtn = document.getElementById('discard-btn');
+
+    // Tab switcher
+    const tabButtons = document.querySelectorAll('.admin-tab-btn');
+    const tabContents = document.querySelectorAll('.admin-tab-content');
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+        
+        btn.classList.add('active');
+        document.getElementById(`tab-${btn.getAttribute('data-tab')}`).classList.add('active');
+      });
+    });
+
+    // Check login state
+    if (activeToken) {
+      verifyPasswordAndLoad(activeToken);
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const pwd = loginPassword.value.trim();
+      verifyPasswordAndLoad(pwd);
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('admin_token');
+      window.location.reload();
+    });
+
+    // Verify password via backend and load dynamic data
+    function verifyPasswordAndLoad(password) {
+      fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'x-admin-password': password
+        }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Incorrect Password');
+        return res.json();
+      })
+      .then(() => {
+        activeToken = password;
+        localStorage.setItem('admin_token', password);
+        loginOverlay.style.opacity = '0';
+        setTimeout(() => {
+          loginOverlay.style.display = 'none';
+        }, 500);
+        loginError.style.display = 'none';
+
+        return fetch('/api/portfolio').then(res => res.json());
+      })
+      .then(data => {
+        if (!data) return;
+        localDatabaseState = JSON.parse(JSON.stringify(data));
+        originalDatabaseCopy = JSON.parse(JSON.stringify(data));
+        
+        bindGeneralInputs();
+        renderProjectsEditor();
+        renderExperienceEditor();
+        renderEducationEditor();
+        renderSkillsEditor();
+      })
+      .catch(err => {
+        console.error(err);
+        loginError.style.display = 'block';
+        localStorage.removeItem('admin_token');
+      });
+    }
+
+    // Input Change Tracker
+    function markDirty() {
+      saveBar.classList.add('visible');
+    }
+
+    function markClean() {
+      saveBar.classList.remove('visible');
+    }
+
+    discardBtn.addEventListener('click', () => {
+      localDatabaseState = JSON.parse(JSON.stringify(originalDatabaseCopy));
+      bindGeneralInputs();
+      renderProjectsEditor();
+      renderExperienceEditor();
+      renderEducationEditor();
+      renderSkillsEditor();
+      markClean();
+    });
+
+    saveBtn.addEventListener('click', () => {
+      saveBtn.disabled = true;
+      saveStatusText.innerText = "Saving changes to disk...";
+      
+      // Update form values of general fields into localDatabaseState first
+      updateGeneralState();
+
+      fetch('/api/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': activeToken
+        },
+        body: JSON.stringify(localDatabaseState)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Incorrect Admin Password or network fail.');
+        return res.json();
+      })
+      .then(result => {
+        saveStatusText.innerText = "✓ Changes saved successfully!";
+        originalDatabaseCopy = JSON.parse(JSON.stringify(localDatabaseState));
+        setTimeout(() => {
+          markClean();
+          saveBtn.disabled = false;
+          saveStatusText.innerText = "You have unsaved changes.";
+        }, 1500);
+      })
+      .catch(err => {
+        saveStatusText.innerText = "❌ Error saving: " + err.message;
+        saveBtn.disabled = false;
+      });
+    });
+
+    // General Information Binding
+    function bindGeneralInputs() {
+      document.getElementById('bio-name').value = localDatabaseState.bio.name;
+      document.getElementById('bio-polaroid-name').value = localDatabaseState.bio.polaroidName || '';
+      document.getElementById('bio-avatar').value = localDatabaseState.bio.avatar;
+      document.getElementById('bio-headline').value = localDatabaseState.bio.headline;
+      document.getElementById('bio-cursive').value = localDatabaseState.bio.cursiveSubtitle;
+      document.getElementById('bio-desc').value = localDatabaseState.bio.description;
+      document.getElementById('bio-email').value = localDatabaseState.bio.email;
+      document.getElementById('bio-linkedin-cta').value = localDatabaseState.bio.linkedinCta;
+
+      document.getElementById('social-github').value = localDatabaseState.socials.github;
+      document.getElementById('social-linkedin').value = localDatabaseState.socials.linkedin;
+      document.getElementById('social-twitter').value = localDatabaseState.socials.twitter;
+      document.getElementById('social-instagram').value = localDatabaseState.socials.instagram;
+
+      // Attach event listeners to general inputs
+      const fields = [
+        'bio-name', 'bio-polaroid-name', 'bio-avatar', 'bio-headline', 'bio-cursive', 'bio-desc', 'bio-email', 
+        'bio-linkedin-cta', 'social-github', 'social-linkedin', 'social-twitter', 'social-instagram'
+      ];
+      fields.forEach(f => {
+        document.getElementById(f).addEventListener('input', markDirty);
+      });
+    }
+
+    function updateGeneralState() {
+      localDatabaseState.bio.name = document.getElementById('bio-name').value.trim();
+      localDatabaseState.bio.polaroidName = document.getElementById('bio-polaroid-name').value.trim();
+      localDatabaseState.bio.avatar = document.getElementById('bio-avatar').value.trim();
+      localDatabaseState.bio.headline = document.getElementById('bio-headline').value.trim();
+      localDatabaseState.bio.cursiveSubtitle = document.getElementById('bio-cursive').value.trim();
+      localDatabaseState.bio.description = document.getElementById('bio-desc').value.trim();
+      localDatabaseState.bio.email = document.getElementById('bio-email').value.trim();
+      localDatabaseState.bio.linkedinCta = document.getElementById('bio-linkedin-cta').value.trim();
+
+      localDatabaseState.socials.github = document.getElementById('social-github').value.trim();
+      localDatabaseState.socials.linkedin = document.getElementById('social-linkedin').value.trim();
+      localDatabaseState.socials.twitter = document.getElementById('social-twitter').value.trim();
+      localDatabaseState.socials.instagram = document.getElementById('social-instagram').value.trim();
+    }
+
+    // Projects Manager
+    const projectsListContainer = document.getElementById('projects-list-container');
+    const addProjectBtn = document.getElementById('add-project-btn');
+
+    addProjectBtn.addEventListener('click', () => {
+      const newProj = {
+        id: "project-" + Date.now(),
+        title: "New Project",
+        link: "#",
+        bannerImage: "images/portfolio.png",
+        viral: false,
+        colorClass: "pink-marker",
+        bgColor: "rgba(255, 104, 175, 0.1)",
+        tags: [
+          { name: "Web Tool", color: "#2563eb", icon: "globe" }
+        ],
+        bullets: [
+          "Description bullet point entry."
+        ]
+      };
+      localDatabaseState.projects.push(newProj);
+      renderProjectsEditor();
+      markDirty();
+    });
+
+    function renderProjectsEditor() {
+      projectsListContainer.innerHTML = '';
+      localDatabaseState.projects.forEach((proj, idx) => {
+        const row = document.createElement('div');
+        row.className = 'admin-card-row';
+        row.innerHTML = `
+          <div class="admin-row-header">
+            <strong style="font-size: 1.1rem; color: var(--foreground);">#${idx + 1} - ${proj.title || 'Untitled Project'}</strong>
+            <button class="admin-btn admin-btn-danger" onclick="deleteProject(${idx})">Delete Project</button>
+          </div>
+          <div class="admin-grid-2">
+            <div class="admin-input-group">
+              <label>Project Title</label>
+              <input type="text" class="admin-input" value="${proj.title || ''}" oninput="updateProjectField(${idx}, 'title', this.value)">
+            </div>
+            <div class="admin-input-group">
+              <label>Project Link / Repository</label>
+              <input type="text" class="admin-input" value="${proj.link || ''}" oninput="updateProjectField(${idx}, 'link', this.value)">
+            </div>
+            <div class="admin-input-group">
+              <label>Banner Image Path</label>
+              <input type="text" class="admin-input" value="${proj.bannerImage || ''}" oninput="updateProjectField(${idx}, 'bannerImage', this.value)">
+            </div>
+            <div class="admin-input-group">
+              <label>Color Marker Style (CSS Class)</label>
+              <select class="admin-input" onchange="updateProjectField(${idx}, 'colorClass', this.value)">
+                <option value="pink-marker" ${proj.colorClass === 'pink-marker' ? 'selected' : ''}>Pink Marker</option>
+                <option value="yellow-marker" ${proj.colorClass === 'yellow-marker' ? 'selected' : ''}>Yellow Marker</option>
+                <option value="blue-marker" ${proj.colorClass === 'blue-marker' ? 'selected' : ''}>Blue Marker</option>
+              </select>
+            </div>
+            <div class="admin-input-group">
+              <label>Background Opacity Fill Color (CSS)</label>
+              <input type="text" class="admin-input" value="${proj.bgColor || ''}" oninput="updateProjectField(${idx}, 'bgColor', this.value)" placeholder="rgba(255, 104, 175, 0.1)">
+            </div>
+            <div class="admin-switch-container">
+              <label class="admin-switch">
+                <input type="checkbox" ${proj.viral ? 'checked' : ''} onchange="updateProjectField(${idx}, 'viral', this.checked)">
+                <span class="admin-slider"></span>
+              </label>
+              <span style="font-weight: 700; font-size: 0.875rem;">DISPLAY "VIRAL" RIBBON BADGE</span>
+            </div>
+          </div>
+          
+          <!-- Tags list -->
+          <div class="sub-list-card">
+            <div class="admin-label-row">
+              <strong style="font-size: 0.875rem; text-transform: uppercase;">Project Badges / Tech Tags</strong>
+              <button class="admin-btn admin-btn-secondary" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.8rem;" onclick="addProjectTag(${idx})">+ Add Badge</button>
+            </div>
+            <div id="project-${idx}-tags">
+              ${proj.tags.map((tag, tagIdx) => `
+                <div class="tag-editor-grid">
+                  <input type="text" class="admin-input" value="${tag.name}" placeholder="Tag Name" oninput="updateProjectTag(${idx}, ${tagIdx}, 'name', this.value)">
+                  <input type="color" class="admin-input" value="${tag.color}" style="padding: 2px; height: 38px;" onchange="updateProjectTag(${idx}, ${tagIdx}, 'color', this.value)">
+                  <select class="admin-input" onchange="updateProjectTag(${idx}, ${tagIdx}, 'icon', this.value)">
+                    <option value="layers" ${tag.icon === 'layers' ? 'selected' : ''}>Layers</option>
+                    <option value="globe" ${tag.icon === 'globe' ? 'selected' : ''}>Globe</option>
+                    <option value="triangle" ${tag.icon === 'triangle' ? 'selected' : ''}>Triangle</option>
+                    <option value="sparkle" ${tag.icon === 'sparkle' ? 'selected' : ''}>Sparkle</option>
+                  </select>
+                  <button class="admin-btn admin-btn-danger" style="padding: 0.5rem;" onclick="deleteProjectTag(${idx}, ${tagIdx})">✖</button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Bullets manager -->
+          <div class="sub-list-card">
+            <div class="admin-label-row">
+              <strong style="font-size: 0.875rem; text-transform: uppercase;">Highlight Bullets (HTML Allowed)</strong>
+              <button class="admin-btn admin-btn-secondary" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.8rem;" onclick="addProjectBullet(${idx})">+ Add Bullet</button>
+            </div>
+            <div class="admin-list-manager">
+              ${proj.bullets.map((b, bulletIdx) => `
+                <div class="admin-list-item-row">
+                  <input type="text" class="admin-input" value="${b.replace(/"/g, '&quot;')}" oninput="updateProjectBullet(${idx}, ${bulletIdx}, this.value)">
+                  <button class="admin-btn admin-btn-danger" style="padding: 0.5rem 0.75rem;" onclick="deleteProjectBullet(${idx}, ${bulletIdx})">✖</button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        projectsListContainer.appendChild(row);
+      });
+    }
+
+    window.updateProjectField = (idx, field, val) => {
+      localDatabaseState.projects[idx][field] = val;
+      markDirty();
+    };
+
+    window.deleteProject = (idx) => {
+      localDatabaseState.projects.splice(idx, 1);
+      renderProjectsEditor();
+      markDirty();
+    };
+
+    window.addProjectTag = (idx) => {
+      localDatabaseState.projects[idx].tags.push({ name: "New Tag", color: "#6d84ff", icon: "layers" });
+      renderProjectsEditor();
+      markDirty();
+    };
+
+    window.updateProjectTag = (idx, tagIdx, field, val) => {
+      localDatabaseState.projects[idx].tags[tagIdx][field] = val;
+      markDirty();
+    };
+
+    window.deleteProjectTag = (idx, tagIdx) => {
+      localDatabaseState.projects[idx].tags.splice(tagIdx, 1);
+      renderProjectsEditor();
+      markDirty();
+    };
+
+    window.addProjectBullet = (idx) => {
+      localDatabaseState.projects[idx].bullets.push("New highlight point.");
+      renderProjectsEditor();
+      markDirty();
+    };
+
+    window.updateProjectBullet = (idx, bulletIdx, val) => {
+      localDatabaseState.projects[idx].bullets[bulletIdx] = val;
+      markDirty();
+    };
+
+    window.deleteProjectBullet = (idx, bulletIdx) => {
+      localDatabaseState.projects[idx].bullets.splice(bulletIdx, 1);
+      renderProjectsEditor();
+      markDirty();
+    };
+
+    // Experience Manager
+    const experienceListContainer = document.getElementById('experience-list-container');
+    const addExpBtn = document.getElementById('add-exp-btn');
+
+    addExpBtn.addEventListener('click', () => {
+      localDatabaseState.experience.push({
+        id: "exp-" + Date.now(),
+        role: "New Role",
+        company: "Company Name",
+        dateRange: "2024 - PRESENT",
+        bullets: ["Participated in key organizational duties."]
+      });
+      renderExperienceEditor();
+      markDirty();
+    });
+
+    function renderExperienceEditor() {
+      experienceListContainer.innerHTML = '';
+      localDatabaseState.experience.forEach((exp, idx) => {
+        const row = document.createElement('div');
+        row.className = 'admin-card-row';
+        row.innerHTML = `
+          <div class="admin-row-header">
+            <strong style="font-size: 1.1rem; color: var(--foreground);">#${idx + 1} - ${exp.role} at ${exp.company}</strong>
+            <button class="admin-btn admin-btn-danger" onclick="deleteExperience(${idx})">Delete Event</button>
+          </div>
+          <div class="admin-grid-2">
+            <div class="admin-input-group">
+              <label>Role / Position Title</label>
+              <input type="text" class="admin-input" value="${exp.role}" oninput="updateExperienceField(${idx}, 'role', this.value)">
+            </div>
+            <div class="admin-input-group">
+              <label>Company / Organization</label>
+              <input type="text" class="admin-input" value="${exp.company}" oninput="updateExperienceField(${idx}, 'company', this.value)">
+            </div>
+            <div class="admin-input-group">
+              <label>Timeline Date Range</label>
+              <input type="text" class="admin-input" value="${exp.dateRange}" oninput="updateExperienceField(${idx}, 'dateRange', this.value)" placeholder="2023 - PRESENT">
+            </div>
+          </div>
+          <div class="sub-list-card">
+            <div class="admin-label-row">
+              <strong style="font-size: 0.875rem; text-transform: uppercase;">Job Responsibilities</strong>
+              <button class="admin-btn admin-btn-secondary" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.8rem;" onclick="addExperienceBullet(${idx})">+ Add Point</button>
+            </div>
+            <div class="admin-list-manager">
+              ${exp.bullets.map((b, bulletIdx) => `
+                <div class="admin-list-item-row">
+                  <input type="text" class="admin-input" value="${b.replace(/"/g, '&quot;')}" oninput="updateExperienceBullet(${idx}, ${bulletIdx}, this.value)">
+                  <button class="admin-btn admin-btn-danger" style="padding: 0.5rem 0.75rem;" onclick="deleteExperienceBullet(${idx}, ${bulletIdx})">✖</button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        experienceListContainer.appendChild(row);
+      });
+    }
+
+    window.updateExperienceField = (idx, field, val) => {
+      localDatabaseState.experience[idx][field] = val;
+      markDirty();
+    };
+
+    window.deleteExperience = (idx) => {
+      localDatabaseState.experience.splice(idx, 1);
+      renderExperienceEditor();
+      markDirty();
+    };
+
+    window.addExperienceBullet = (idx) => {
+      localDatabaseState.experience[idx].bullets.push("New responsibility outline.");
+      renderExperienceEditor();
+      markDirty();
+    };
+
+    window.updateExperienceBullet = (idx, bulletIdx, val) => {
+      localDatabaseState.experience[idx].bullets[bulletIdx] = val;
+      markDirty();
+    };
+
+    window.deleteExperienceBullet = (idx, bulletIdx) => {
+      localDatabaseState.experience[idx].bullets.splice(bulletIdx, 1);
+      renderExperienceEditor();
+      markDirty();
+    };
+
+    // Education Manager
+    const educationListContainer = document.getElementById('education-list-container');
+    const addEduBtn = document.getElementById('add-edu-btn');
+
+    addEduBtn.addEventListener('click', () => {
+      localDatabaseState.education.push({
+        id: "edu-" + Date.now(),
+        degree: "Degree Title",
+        institution: "Institution",
+        dateRange: "2022 - Present",
+        score: "Grade Outline",
+        iconType: "degree",
+        color: "blue"
+      });
+      renderEducationEditor();
+      markDirty();
+    });
+
+    function renderEducationEditor() {
+      educationListContainer.innerHTML = '';
+      localDatabaseState.education.forEach((edu, idx) => {
+        const row = document.createElement('div');
+        row.className = 'admin-card-row';
+        row.innerHTML = `
+          <div class="admin-row-header">
+            <strong style="font-size: 1.1rem; color: var(--foreground);">#${idx + 1} - ${edu.degree}</strong>
+            <button class="admin-btn admin-btn-danger" onclick="deleteEducation(${idx})">Delete Card</button>
+          </div>
+          <div class="admin-grid-2">
+            <div class="admin-input-group">
+              <label>Degree / Class Title</label>
+              <input type="text" class="admin-input" value="${edu.degree}" oninput="updateEducationField(${idx}, 'degree', this.value)">
+            </div>
+            <div class="admin-input-group">
+              <label>Institution Name</label>
+              <input type="text" class="admin-input" value="${edu.institution}" oninput="updateEducationField(${idx}, 'institution', this.value)">
+            </div>
+            <div class="admin-input-group">
+              <label>Timeline Date Range</label>
+              <input type="text" class="admin-input" value="${edu.dateRange}" oninput="updateEducationField(${idx}, 'dateRange', this.value)">
+            </div>
+            <div class="admin-input-group">
+              <label>Score Grade (CGPA / Percentage)</label>
+              <input type="text" class="admin-input" value="${edu.score}" oninput="updateEducationField(${idx}, 'score', this.value)">
+            </div>
+            <div class="admin-input-group">
+              <label>Layout Icon Representation</label>
+              <select class="admin-input" onchange="updateEducationField(${idx}, 'iconType', this.value)">
+                <option value="degree" ${edu.iconType === 'degree' ? 'selected' : ''}>Degree Ribbon / Badge</option>
+                <option value="school" ${edu.iconType === 'school' ? 'selected' : ''}>School book</option>
+              </select>
+            </div>
+            <div class="admin-input-group">
+              <label>Layout Theme (Color Class)</label>
+              <select class="admin-input" onchange="updateEducationField(${idx}, 'color', this.value)">
+                <option value="pink" ${edu.color === 'pink' ? 'selected' : ''}>Brand Pink</option>
+                <option value="blue" ${edu.color === 'blue' ? 'selected' : ''}>Brand Blue</option>
+              </select>
+            </div>
+          </div>
+        `;
+        educationListContainer.appendChild(row);
+      });
+    }
+
+    window.updateEducationField = (idx, field, val) => {
+      localDatabaseState.education[idx][field] = val;
+      markDirty();
+    };
+
+    window.deleteEducation = (idx) => {
+      localDatabaseState.education.splice(idx, 1);
+      renderEducationEditor();
+      markDirty();
+    };
+
+    // Skills Categorized Manager
+    const skillsListContainer = document.getElementById('skills-list-container');
+
+    function renderSkillsEditor() {
+      skillsListContainer.innerHTML = '';
+      localDatabaseState.skills.forEach((cat, idx) => {
+        const row = document.createElement('div');
+        row.className = 'admin-card-row';
+        row.innerHTML = `
+          <div class="admin-row-header" style="border: none; margin-bottom: 0;">
+            <strong style="font-size: 1.25rem; color: var(--foreground);">${cat.category} Category</strong>
+          </div>
+          
+          <div class="sub-list-card" style="margin-top: 1rem; background: rgba(255,255,255,0.75);">
+            <div class="admin-label-row">
+              <span style="font-size: 0.875rem; font-weight: 700; color: var(--muted); text-transform: uppercase;">Skills Tags List</span>
+              <button class="admin-btn admin-btn-secondary" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.8rem;" onclick="addSkill(${idx})">+ Add Skill Badge</button>
+            </div>
+            <div id="skills-${idx}-list">
+              ${cat.list.map((skill, sIdx) => `
+                <div class="skill-editor-grid">
+                  <input type="text" class="admin-input" value="${skill.name}" placeholder="Skill Name" oninput="updateSkillField(${idx}, ${sIdx}, 'name', this.value)">
+                  <input type="color" class="admin-input" value="${skill.color}" style="padding: 2px; height: 38px;" onchange="updateSkillField(${idx}, ${sIdx}, 'color', this.value)">
+                  <select class="admin-input" onchange="updateSkillField(${idx}, ${sIdx}, 'icon', this.value)">
+                    <option value="layers" ${skill.icon === 'layers' ? 'selected' : ''}>Layers</option>
+                    <option value="globe" ${skill.icon === 'globe' ? 'selected' : ''}>Globe</option>
+                    <option value="triangle" ${skill.icon === 'triangle' ? 'selected' : ''}>Triangle</option>
+                    <option value="sparkle" ${skill.icon === 'sparkle' ? 'selected' : ''}>Sparkle</option>
+                  </select>
+                  <button class="admin-btn admin-btn-danger" style="padding: 0.5rem;" onclick="deleteSkill(${idx}, ${sIdx})">✖</button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        skillsListContainer.appendChild(row);
+      });
+    }
+
+    window.updateSkillField = (idx, sIdx, field, val) => {
+      localDatabaseState.skills[idx].list[sIdx][field] = val;
+      markDirty();
+    };
+
+    window.addSkill = (idx) => {
+      localDatabaseState.skills[idx].list.push({ name: "New Skill", color: "#ff68af", icon: "layers" });
+      renderSkillsEditor();
+      markDirty();
+    };
+
+    window.deleteSkill = (idx, sIdx) => {
+      localDatabaseState.skills[idx].list.splice(sIdx, 1);
+      renderSkillsEditor();
+      markDirty();
+    };
+
+  </script>
+</body>
+</html>
