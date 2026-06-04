@@ -1362,3 +1362,31 @@ nav {
 .admin-save-btn.discard:hover {
   background: rgba(0,0,0,0.02);
 }
+
+/* Premium Page Loader Styles */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  background: #fdfbf7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+.page-loader.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+.loader-spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 3px solid rgba(109, 132, 255, 0.1);
+  border-top-color: var(--brand-blue);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+

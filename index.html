@@ -10,6 +10,11 @@
 </head>
 <body>
   
+  <!-- Premium Page Loader -->
+  <div id="page-loader" class="page-loader">
+    <div class="loader-spinner"></div>
+  </div>
+  
   <!-- Noise Texture Background -->
   <div class="bg-grid"></div>
 
@@ -73,7 +78,7 @@
       <!-- Polaroid Image -->
       <div style="flex-shrink: 0; position: relative; width: 14rem;" class="group">
         <div class="polaroid z-20">
-          <img id="hero-polaroid-img" src="" alt="" class="polaroid-img" onerror="this.src='https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'" />
+          <img id="hero-polaroid-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="polaroid-img" onerror="if (this.src && !this.src.startsWith('data:')) this.src='https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'" />
           <p id="hero-polaroid-name" class="font-handwriting" style="font-size: 1.5rem; text-align: center; margin-top: 0.25rem; font-weight: 700; color: var(--foreground);"></p>
         </div>
       </div>

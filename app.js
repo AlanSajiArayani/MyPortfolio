@@ -12,6 +12,17 @@ document.addEventListener('DOMContentLoaded', () => {
     return icons[name] || icons.layers;
   };
 
+  // Loader dismiss helper
+  const dismissLoader = () => {
+    const loader = document.getElementById('page-loader');
+    if (loader) {
+      loader.classList.add('fade-out');
+      setTimeout(() => {
+        try { loader.remove(); } catch(e) {}
+      }, 400);
+    }
+  };
+
   // Fetch portfolio data from Express server
   fetch('/api/portfolio')
     .then(res => {
@@ -21,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       renderPortfolio(data);
       initializeUIInteractions();
+      dismissLoader();
     })
     .catch(err => {
       console.error('Error rendering dynamic sections:', err);
@@ -30,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ⚠️ Offline Mode: Running with static fallbacks
         </div>
       `);
+      dismissLoader();
     });
 
   // Render database content into respective container templates
