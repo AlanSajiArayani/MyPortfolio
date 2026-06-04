@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const starCountBadge = document.getElementById('star-count-badge');
     const starCountNum = document.getElementById('star-count-num');
     
-    fetch('https://api.github.com/repos/alansaji/portfolio')
+    fetch('https://api.github.com/repos/AlanSajiArayani/MyPortfolio')
       .then(res => {
         if (!res.ok) {
           return fetch('https://api.github.com/repos/zoxilsi/zoxilsi.cc');
