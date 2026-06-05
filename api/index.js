@@ -122,18 +122,60 @@ app.post('/api/generate-image', async (req, res) => {
   }
 
   if (!imageBuffer) {
+    let retries = 3;
+    while (retries > 0 && !imageBuffer) {
+      try {
+        console.log(`Generating image with Pollinations AI (Sana) - Attempt ${4 - retries}...`);
+        const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true&model=sana&seed=${Date.now()}`;
+        const response = await fetch(pollinationsUrl);
+        if (!response.ok) {
+          throw new Error(`Pollinations AI error: ${response.status} ${response.statusText}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        imageBuffer = Buffer.from(arrayBuffer);
+        usedModel = 'Pollinations AI (Sana)';
+      } catch (err) {
+        console.warn(`Pollinations attempt ${4 - retries} failed:`, err.message);
+        retries--;
+        if (retries > 0) {
+          // Wait 1.5 seconds before retrying
+          await new Promise(resolve => setTimeout(resolve, 1500));
+        }
+      }
+    }
+  }
+
+  // If Pollinations AI completely fails (e.g. rate limited/queue full), fallback to keyword-matched image from LoremFlickr
+  if (!imageBuffer) {
     try {
-      console.log('Generating image with Pollinations AI (Sana)...');
-      const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true&model=sana&seed=${Date.now()}`;
-      const response = await fetch(pollinationsUrl);
+      console.log('Pollinations AI failed. Falling back to keyword-matched image from LoremFlickr...');
+      
+      const stopWords = new Set([
+        'a', 'an', 'the', 'in', 'on', 'of', 'to', 'and', 'or', 'for', 'with', 'by', 'from', 'at',
+        'my', 'your', 'me', 'about', 'is', 'are', 'was', 'were', 'generate', 'image', 'create',
+        'painting', 'drawing', 'illustration', 'sketch', 'style', 'of', 'like', 'beautiful', 'modern'
+      ]);
+      
+      const words = prompt
+        .toLowerCase()
+        .replace(/[^\w\s]/g, ' ')
+        .split(/\s+/)
+        .filter(w => w.length > 2 && !stopWords.has(w));
+      
+      const tags = words.length > 0 ? words.slice(0, 2) : ['technology'];
+      const tagString = tags.map(encodeURIComponent).join(',');
+      const loremFlickrUrl = `https://loremflickr.com/1024/1024/${tagString}`;
+      
+      console.log(`Fetching photo related to keywords [${tags.join(', ')}] from:`, loremFlickrUrl);
+      const response = await fetch(loremFlickrUrl);
       if (!response.ok) {
-        throw new Error(`Pollinations AI error: ${response.status} ${response.statusText}`);
+        throw new Error(`LoremFlickr HTTP error: ${response.status}`);
       }
       const arrayBuffer = await response.arrayBuffer();
       imageBuffer = Buffer.from(arrayBuffer);
-      usedModel = 'Pollinations AI (Sana)';
-    } catch (err) {
-      console.warn('Pollinations AI fallback failed, using Curated Premium Image:', err.message);
+      usedModel = `LoremFlickr Search Fallback (${tags.join(', ')})`;
+    } catch (fallbackErr) {
+      console.warn('LoremFlickr fallback failed, using Curated Premium Image:', fallbackErr.message);
       
       const PREMIUM_FALLBACK_IMAGES = [
         'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1024&h=1024&fit=crop', // Abstract Digital Flow
@@ -156,8 +198,8 @@ app.post('/api/generate-image', async (req, res) => {
         const arrayBuffer = await response.arrayBuffer();
         imageBuffer = Buffer.from(arrayBuffer);
         usedModel = 'Curated Premium Image (Unsplash)';
-      } catch (fallbackErr) {
-        console.error('Curated image fallback also failed:', fallbackErr);
+      } catch (curatedErr) {
+        console.error('All fallback services failed:', curatedErr);
         return res.status(500).json({ error: 'Failed to generate image from AI and fallback services.' });
       }
     }
