@@ -78,131 +78,59 @@ app.post('/api/generate-image', async (req, res) => {
   let imageBuffer = null;
   let usedModel = '';
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (apiKey) {
-    try {
-      console.log('Attempting Gemini Imagen 3 generation...');
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            instances: [
-              {
-                prompt: prompt
-              }
-            ],
-            parameters: {
-              sampleCount: 1,
-              outputMimeType: 'image/jpeg',
-              aspectRatio: '1:1'
+  const apiKey = req.headers['x-gemini-api-key'] || process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return res.status(400).json({
+      error: 'Gemini API Key is missing. Please enter a valid Gemini API Key in the config field at the top of the Projects tab to generate AI images.'
+    });
+  }
+
+  try {
+    console.log('Attempting Gemini Imagen 3 generation...');
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          instances: [
+            {
+              prompt: prompt
             }
-          })
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Gemini Imagen API error: ${response.status} - ${errorText}`);
+          ],
+          parameters: {
+            sampleCount: 1,
+            outputMimeType: 'image/jpeg',
+            aspectRatio: '1:1'
+          }
+        })
       }
+    );
 
-      const data = await response.json();
-      if (data.predictions && data.predictions[0] && data.predictions[0].bytesBase64Encoded) {
-        imageBuffer = Buffer.from(data.predictions[0].bytesBase64Encoded, 'base64');
-        usedModel = 'Gemini Imagen 3';
-      } else {
-        throw new Error('Gemini response did not contain predictions.');
-      }
-    } catch (err) {
-      console.error('Gemini generation failed, falling back to Pollinations AI:', err.message);
-    }
-  }
-
-  if (!imageBuffer) {
-    let retries = 3;
-    while (retries > 0 && !imageBuffer) {
+    if (!response.ok) {
+      const errorText = await response.text();
+      let errMsg = errorText;
       try {
-        console.log(`Generating image with Pollinations AI (Sana) - Attempt ${4 - retries}...`);
-        const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true&model=sana&seed=${Date.now()}`;
-        const response = await fetch(pollinationsUrl);
-        if (!response.ok) {
-          throw new Error(`Pollinations AI error: ${response.status} ${response.statusText}`);
+        const errJson = JSON.parse(errorText);
+        if (errJson.error && errJson.error.message) {
+          errMsg = errJson.error.message;
         }
-        const arrayBuffer = await response.arrayBuffer();
-        imageBuffer = Buffer.from(arrayBuffer);
-        usedModel = 'Pollinations AI (Sana)';
-      } catch (err) {
-        console.warn(`Pollinations attempt ${4 - retries} failed:`, err.message);
-        retries--;
-        if (retries > 0) {
-          // Wait 1.5 seconds before retrying
-          await new Promise(resolve => setTimeout(resolve, 1500));
-        }
-      }
+      } catch (_) {}
+      throw new Error(`Gemini Imagen error: ${errMsg}`);
     }
-  }
 
-  // If Pollinations AI completely fails (e.g. rate limited/queue full), fallback to keyword-matched image from LoremFlickr
-  if (!imageBuffer) {
-    try {
-      console.log('Pollinations AI failed. Falling back to keyword-matched image from LoremFlickr...');
-      
-      const stopWords = new Set([
-        'a', 'an', 'the', 'in', 'on', 'of', 'to', 'and', 'or', 'for', 'with', 'by', 'from', 'at',
-        'my', 'your', 'me', 'about', 'is', 'are', 'was', 'were', 'generate', 'image', 'create',
-        'painting', 'drawing', 'illustration', 'sketch', 'style', 'of', 'like', 'beautiful', 'modern'
-      ]);
-      
-      const words = prompt
-        .toLowerCase()
-        .replace(/[^\w\s]/g, ' ')
-        .split(/\s+/)
-        .filter(w => w.length > 2 && !stopWords.has(w));
-      
-      const tags = words.length > 0 ? words.slice(0, 2) : ['technology'];
-      const tagString = tags.map(encodeURIComponent).join(',');
-      const loremFlickrUrl = `https://loremflickr.com/1024/1024/${tagString}`;
-      
-      console.log(`Fetching photo related to keywords [${tags.join(', ')}] from:`, loremFlickrUrl);
-      const response = await fetch(loremFlickrUrl);
-      if (!response.ok) {
-        throw new Error(`LoremFlickr HTTP error: ${response.status}`);
-      }
-      const arrayBuffer = await response.arrayBuffer();
-      imageBuffer = Buffer.from(arrayBuffer);
-      usedModel = `LoremFlickr Search Fallback (${tags.join(', ')})`;
-    } catch (fallbackErr) {
-      console.warn('LoremFlickr fallback failed, using Curated Premium Image:', fallbackErr.message);
-      
-      const PREMIUM_FALLBACK_IMAGES = [
-        'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1024&h=1024&fit=crop', // Abstract Digital Flow
-        'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=1024&h=1024&fit=crop', // 3D Geometric Art
-        'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=1024&h=1024&fit=crop', // Cyberpunk Setup
-        'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1024&h=1024&fit=crop', // Retro Tech Workspace
-        'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1024&h=1024&fit=crop', // Tech Device Neon
-        'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1024&h=1024&fit=crop', // Vibrant Gradient
-        'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1024&h=1024&fit=crop'  // Dark Forest Minimalist
-      ];
-
-      try {
-        const randomIndex = Math.floor(Math.random() * PREMIUM_FALLBACK_IMAGES.length);
-        const fallbackUrl = PREMIUM_FALLBACK_IMAGES[randomIndex];
-        console.log('Fetching curated image from Unsplash:', fallbackUrl);
-        const response = await fetch(fallbackUrl);
-        if (!response.ok) {
-          throw new Error(`Unsplash fallback HTTP error: ${response.status}`);
-        }
-        const arrayBuffer = await response.arrayBuffer();
-        imageBuffer = Buffer.from(arrayBuffer);
-        usedModel = 'Curated Premium Image (Unsplash)';
-      } catch (curatedErr) {
-        console.error('All fallback services failed:', curatedErr);
-        return res.status(500).json({ error: 'Failed to generate image from AI and fallback services.' });
-      }
+    const data = await response.json();
+    if (data.predictions && data.predictions[0] && data.predictions[0].bytesBase64Encoded) {
+      imageBuffer = Buffer.from(data.predictions[0].bytesBase64Encoded, 'base64');
+      usedModel = 'Gemini Imagen 3';
+    } else {
+      throw new Error('Gemini response did not contain predictions.');
     }
+  } catch (err) {
+    console.error('Gemini Imagen generation failed:', err.message);
+    return res.status(500).json({ error: err.message });
   }
 
   // Save the image locally if possible
