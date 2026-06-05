@@ -149,22 +149,22 @@
         {
           "name": "JavaScript",
           "color": "#F7DF1E",
-          "icon": "layers"
+          "icon": "javascript"
         },
         {
           "name": "TypeScript",
           "color": "#3178C6",
-          "icon": "layers"
+          "icon": "typescript"
         },
         {
           "name": "Python",
           "color": "#3776AB",
-          "icon": "layers"
+          "icon": "python"
         },
         {
           "name": "SQL",
           "color": "#4169E1",
-          "icon": "layers"
+          "icon": "database"
         }
       ]
     },
@@ -174,22 +174,22 @@
         {
           "name": "React",
           "color": "#61DAFB",
-          "icon": "layers"
+          "icon": "react"
         },
         {
           "name": "Next.js",
           "color": "#000000",
-          "icon": "layers"
+          "icon": "react"
         },
         {
           "name": "HTML5 / CSS3",
           "color": "#E34F26",
-          "icon": "layers"
+          "icon": "code"
         },
         {
           "name": "Tailwind CSS",
           "color": "#38BDF8",
-          "icon": "layers"
+          "icon": "tailwind"
         }
       ]
     },
@@ -199,17 +199,17 @@
         {
           "name": "Node.js",
           "color": "#339933",
-          "icon": "layers"
+          "icon": "node"
         },
         {
           "name": "Express.js",
           "color": "#000000",
-          "icon": "layers"
+          "icon": "node"
         },
         {
           "name": "REST APIs",
           "color": "#3b82f6",
-          "icon": "globe"
+          "icon": "terminal"
         }
       ]
     },
@@ -219,17 +219,17 @@
         {
           "name": "MongoDB",
           "color": "#47A248",
-          "icon": "layers"
+          "icon": "database"
         },
         {
           "name": "MySQL",
           "color": "#00758F",
-          "icon": "layers"
+          "icon": "database"
         },
         {
           "name": "PostgreSQL",
           "color": "#4169E1",
-          "icon": "layers"
+          "icon": "database"
         }
       ]
     },
@@ -239,22 +239,22 @@
         {
           "name": "Git",
           "color": "#F05032",
-          "icon": "layers"
+          "icon": "git"
         },
         {
           "name": "GitHub",
           "color": "#000000",
-          "icon": "layers"
+          "icon": "git"
         },
         {
           "name": "Docker",
           "color": "#0DB7ED",
-          "icon": "layers"
+          "icon": "docker"
         },
         {
           "name": "VS Code",
           "color": "#007ACC",
-          "icon": "layers"
+          "icon": "code"
         },
         {
           "name": "Gemini AI",
