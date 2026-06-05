@@ -565,9 +565,9 @@
               ${proj.tags.map((tag, tagIdx) => `
                 <div class="tag-editor-grid">
                   <input type="text" class="admin-input" value="${tag.name}" placeholder="Tag Name" oninput="updateProjectTag(${idx}, ${tagIdx}, 'name', this.value)">
-                  <input type="color" class="admin-input" value="${tag.color}" style="padding: 2px; height: 38px;" onchange="updateProjectTag(${idx}, ${tagIdx}, 'color', this.value)">
+                  <input type="color" class="admin-input" value="${tag.color}" style="padding: 2px; height: 38px;" onchange="updateProjectTag(${idx}, ${tagIdx}, 'color', this.value, this)">
                   <div style="display: flex; align-items: center; gap: 0.35rem; width: 100%;">
-                    <select class="admin-input" onchange="updateProjectTag(${idx}, ${tagIdx}, 'icon', this.value)" style="flex-grow: 1;">
+                    <select class="admin-input" onchange="updateProjectTag(${idx}, ${tagIdx}, 'icon', this.value, this)" style="flex-grow: 1;">
                       <optgroup label="Generic Icons">
                         <option value="layers" ${tag.icon === 'layers' ? 'selected' : ''}>Layers</option>
                         <option value="globe" ${tag.icon === 'globe' ? 'selected' : ''}>Globe</option>
@@ -636,9 +636,20 @@
       markDirty();
     };
 
-    window.updateProjectTag = (idx, tagIdx, field, val) => {
+    window.updateProjectTag = (idx, tagIdx, field, val, el) => {
       localDatabaseState.projects[idx].tags[tagIdx][field] = val;
       markDirty();
+      if (el) {
+        const grid = el.closest('.tag-editor-grid');
+        if (grid) {
+          const previewBox = grid.querySelector('.icon-preview-box');
+          if (previewBox) {
+            const currentTag = localDatabaseState.projects[idx].tags[tagIdx];
+            previewBox.style.color = currentTag.color || 'var(--foreground)';
+            previewBox.innerHTML = getIconSvg(currentTag.icon || 'layers', 18, 18, currentTag.color || 'currentColor');
+          }
+        }
+      }
     };
 
     window.deleteProjectTag = (idx, tagIdx) => {
@@ -849,9 +860,9 @@
               ${cat.list.map((skill, sIdx) => `
                 <div class="skill-editor-grid">
                   <input type="text" class="admin-input" value="${skill.name}" placeholder="Skill Name" oninput="updateSkillField(${idx}, ${sIdx}, 'name', this.value)">
-                  <input type="color" class="admin-input" value="${skill.color}" style="padding: 2px; height: 38px;" onchange="updateSkillField(${idx}, ${sIdx}, 'color', this.value)">
+                  <input type="color" class="admin-input" value="${skill.color}" style="padding: 2px; height: 38px;" onchange="updateSkillField(${idx}, ${sIdx}, 'color', this.value, this)">
                   <div style="display: flex; align-items: center; gap: 0.35rem; width: 100%;">
-                    <select class="admin-input" onchange="updateSkillField(${idx}, ${sIdx}, 'icon', this.value)" style="flex-grow: 1;">
+                    <select class="admin-input" onchange="updateSkillField(${idx}, ${sIdx}, 'icon', this.value, this)" style="flex-grow: 1;">
                       <optgroup label="Generic Icons">
                         <option value="layers" ${skill.icon === 'layers' ? 'selected' : ''}>Layers</option>
                         <option value="globe" ${skill.icon === 'globe' ? 'selected' : ''}>Globe</option>
@@ -887,9 +898,20 @@
       });
     }
 
-    window.updateSkillField = (idx, sIdx, field, val) => {
+    window.updateSkillField = (idx, sIdx, field, val, el) => {
       localDatabaseState.skills[idx].list[sIdx][field] = val;
       markDirty();
+      if (el) {
+        const grid = el.closest('.skill-editor-grid');
+        if (grid) {
+          const previewBox = grid.querySelector('.icon-preview-box');
+          if (previewBox) {
+            const currentSkill = localDatabaseState.skills[idx].list[sIdx];
+            previewBox.style.color = currentSkill.color || 'var(--foreground)';
+            previewBox.innerHTML = getIconSvg(currentSkill.icon || 'layers', 18, 18, currentSkill.color || 'currentColor');
+          }
+        }
+      }
     };
 
     window.addSkill = (idx) => {
