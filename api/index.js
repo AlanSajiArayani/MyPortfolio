@@ -79,58 +79,106 @@ app.post('/api/generate-image', async (req, res) => {
   let usedModel = '';
 
   const apiKey = req.headers['x-gemini-api-key'] || process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    return res.status(400).json({
-      error: 'Gemini API Key is missing. Please enter a valid Gemini API Key in the config field at the top of the Projects tab to generate AI images.'
-    });
+  if (apiKey) {
+    try {
+      console.log('Attempting Gemini Imagen 4.0 generation...');
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': apiKey
+          },
+          body: JSON.stringify({
+            instances: [
+              {
+                prompt: prompt
+              }
+            ],
+            parameters: {
+              sampleCount: 1,
+              outputMimeType: 'image/jpeg',
+              aspectRatio: '1:1'
+            }
+          })
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.predictions && data.predictions[0] && data.predictions[0].bytesBase64Encoded) {
+          imageBuffer = Buffer.from(data.predictions[0].bytesBase64Encoded, 'base64');
+          usedModel = 'Gemini Imagen 4.0';
+        }
+      } else {
+        const errText = await response.text();
+        console.warn('Gemini Imagen 4.0 failed, trying Gemini 2.5 Flash Image...', errText);
+        
+        // Try multimodal gemini-2.5-flash-image generateContent
+        const response2 = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-goog-api-key': apiKey
+            },
+            body: JSON.stringify({
+              contents: [
+                {
+                  parts: [
+                    {
+                      text: prompt
+                    }
+                  ]
+                }
+              ],
+              generationConfig: {
+                responseModalities: ['IMAGE']
+              }
+            })
+          }
+        );
+        
+        if (response2.ok) {
+          const data2 = await response2.json();
+          if (data2.candidates && data2.candidates[0] && data2.candidates[0].content) {
+            const parts = data2.candidates[0].content.parts;
+            const imgPart = parts.find(p => p.inlineData && p.inlineData.mimeType && p.inlineData.mimeType.startsWith('image/'));
+            if (imgPart && imgPart.inlineData.data) {
+              imageBuffer = Buffer.from(imgPart.inlineData.data, 'base64');
+              usedModel = 'Gemini 2.5 Flash Image';
+            }
+          }
+        } else {
+          const errText2 = await response2.text();
+          console.warn('Gemini 2.5 Flash Image also failed:', errText2);
+        }
+      }
+    } catch (err) {
+      console.warn('Gemini generation failed:', err.message);
+    }
   }
 
-  try {
-    console.log('Attempting Gemini Imagen 3 generation...');
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          instances: [
-            {
-              prompt: prompt
-            }
-          ],
-          parameters: {
-            sampleCount: 1,
-            outputMimeType: 'image/jpeg',
-            aspectRatio: '1:1'
-          }
-        })
+  // Fallback strictly to Pollinations AI (which is a real AI generator) if Gemini fails or if no API key was provided
+  if (!imageBuffer) {
+    try {
+      console.log('Generating image with Pollinations AI (Sana)...');
+      const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true&model=sana&seed=${Date.now()}`;
+      const response = await fetch(pollinationsUrl);
+      if (!response.ok) {
+        throw new Error(`Pollinations AI error: ${response.status} ${response.statusText}`);
       }
-    );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      let errMsg = errorText;
-      try {
-        const errJson = JSON.parse(errorText);
-        if (errJson.error && errJson.error.message) {
-          errMsg = errJson.error.message;
-        }
-      } catch (_) {}
-      throw new Error(`Gemini Imagen error: ${errMsg}`);
+      const arrayBuffer = await response.arrayBuffer();
+      imageBuffer = Buffer.from(arrayBuffer);
+      usedModel = 'Pollinations AI (Sana)';
+    } catch (err) {
+      console.error('All AI image generators failed:', err.message);
+      return res.status(500).json({
+        error: `AI Image Generation failed: ${err.message}. (Note: Free Gemini API keys have 0 quota for image generation. Please make sure your server has internet access to reach the Pollinations AI fallback).`
+      });
     }
-
-    const data = await response.json();
-    if (data.predictions && data.predictions[0] && data.predictions[0].bytesBase64Encoded) {
-      imageBuffer = Buffer.from(data.predictions[0].bytesBase64Encoded, 'base64');
-      usedModel = 'Gemini Imagen 3';
-    } else {
-      throw new Error('Gemini response did not contain predictions.');
-    }
-  } catch (err) {
-    console.error('Gemini Imagen generation failed:', err.message);
-    return res.status(500).json({ error: err.message });
   }
 
   // Save the image locally if possible
