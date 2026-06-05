@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Render database content into respective container templates
   const renderPortfolio = (data) => {
     // 1. Navigation & Profile Brand name
-    document.getElementById('nav-logo-name').innerText = data.bio.name;
+    document.getElementById('nav-logo-name').innerText = data.bio.logoName || data.bio.name;
     
     // 2. Navigation Links
     document.getElementById('nav-link-github').href = data.socials.github;
