@@ -730,8 +730,13 @@
           
           window.updateBannerPreview(idx, result.imagePath);
           
-          statusDiv.style.color = "#10b981"; // green
-          statusDiv.innerText = `✓ Successfully generated via ${result.model}! ${result.fallbackMode === 'base64' ? '(Saved as Base64 fallback)' : ''}`;
+          if (result.isFallback) {
+            statusDiv.style.color = "#d97706"; // Amber / Warning
+            statusDiv.innerText = `⚠️ Free Gemini key has 0 image quota & Pollinations rate-limited. Used curated premium design banner. (Upgrade to paid Gemini plan for custom AI images).`;
+          } else {
+            statusDiv.style.color = "#10b981"; // green
+            statusDiv.innerText = `✓ Successfully generated via ${result.model}! ${result.fallbackMode === 'base64' ? '(Saved as Base64 fallback)' : ''}`;
+          }
           
           markDirty();
         } else {

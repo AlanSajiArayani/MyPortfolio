@@ -174,10 +174,33 @@ app.post('/api/generate-image', async (req, res) => {
       imageBuffer = Buffer.from(arrayBuffer);
       usedModel = 'Pollinations AI (Sana)';
     } catch (err) {
-      console.error('All AI image generators failed:', err.message);
-      return res.status(500).json({
-        error: `AI Image Generation failed: ${err.message}. (Note: Free Gemini API keys have 0 quota for image generation. Please make sure your server has internet access to reach the Pollinations AI fallback).`
-      });
+      console.warn('All AI image generators failed, using Curated Premium Image:', err.message);
+      
+      const PREMIUM_FALLBACK_IMAGES = [
+        'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1024&h=1024&fit=crop', // Abstract Digital Flow
+        'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=1024&h=1024&fit=crop', // 3D Geometric Art
+        'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=1024&h=1024&fit=crop', // Cyberpunk Setup
+        'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1024&h=1024&fit=crop', // Retro Tech Workspace
+        'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1024&h=1024&fit=crop', // Tech Device Neon
+        'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1024&h=1024&fit=crop', // Vibrant Gradient
+        'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1024&h=1024&fit=crop'  // Dark Forest Minimalist
+      ];
+
+      try {
+        const randomIndex = Math.floor(Math.random() * PREMIUM_FALLBACK_IMAGES.length);
+        const fallbackUrl = PREMIUM_FALLBACK_IMAGES[randomIndex];
+        console.log('Fetching curated image from Unsplash:', fallbackUrl);
+        const response = await fetch(fallbackUrl);
+        if (!response.ok) {
+          throw new Error(`Unsplash fallback HTTP error: ${response.status}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        imageBuffer = Buffer.from(arrayBuffer);
+        usedModel = 'Curated Premium Image (Unsplash)';
+      } catch (curatedErr) {
+        console.error('All fallback services failed:', curatedErr);
+        return res.status(500).json({ error: 'Failed to generate image from AI and fallback services.' });
+      }
     }
   }
 
@@ -186,6 +209,8 @@ app.post('/api/generate-image', async (req, res) => {
   const imagesDir = path.join(__dirname, '..', 'images');
   const localFilePath = path.join(imagesDir, filename);
   const relativePath = `images/${filename}`;
+
+  const isFallback = usedModel === 'Curated Premium Image (Unsplash)';
 
   try {
     if (!fs.existsSync(imagesDir)) {
@@ -197,7 +222,8 @@ app.post('/api/generate-image', async (req, res) => {
     return res.json({
       success: true,
       imagePath: relativePath,
-      model: usedModel
+      model: usedModel,
+      isFallback
     });
   } catch (writeErr) {
     console.warn('Could not write image to local disk (probably read-only / Vercel). Returning base64 URI.', writeErr.message);
@@ -206,6 +232,7 @@ app.post('/api/generate-image', async (req, res) => {
       success: true,
       imagePath: base64Uri,
       model: usedModel,
+      isFallback,
       fallbackMode: 'base64'
     });
   }
