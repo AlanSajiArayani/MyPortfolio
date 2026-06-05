@@ -219,19 +219,6 @@
 
     <!-- Projects Tab Content -->
     <div class="admin-tab-content" id="tab-projects">
-      <div class="soft-card" style="padding: 1.5rem; margin-bottom: 2rem; border-left: 4px solid var(--brand-pink); background: rgba(255, 104, 175, 0.02);">
-        <h3 style="font-size: 1rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem; color: var(--foreground);">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-pink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
-          Gemini AI Image Generation Config
-        </h3>
-        <div class="admin-input-group" style="margin-bottom: 0;">
-          <label for="gemini-api-key-input">Google Gemini API Key</label>
-          <input type="password" id="gemini-api-key-input" class="admin-input" placeholder="Enter your Gemini API Key (e.g. AIzaSy...)" style="max-width: 32rem;">
-          <p style="font-size: 0.75rem; color: var(--muted); margin-top: 0.35rem; font-weight: 600;">
-            The key is saved locally in your browser and used to call Google's native Imagen 3 model. Get a free key from the <a href="https://aistudio.google.com/" target="_blank" style="color: var(--brand-blue); text-decoration: underline;">Google AI Studio</a>.
-          </p>
-        </div>
-      </div>
       <div id="projects-list-container">
         <!-- Rendered Dynamically -->
       </div>
@@ -385,15 +372,6 @@
         renderExperienceEditor();
         renderEducationEditor();
         renderSkillsEditor();
-
-        // Initialize Gemini API Key input
-        const keyInput = document.getElementById('gemini-api-key-input');
-        if (keyInput) {
-          keyInput.value = localStorage.getItem('gemini_api_key') || '';
-          keyInput.addEventListener('input', () => {
-            localStorage.setItem('gemini_api_key', keyInput.value.trim());
-          });
-        }
       })
       .catch(err => {
         console.error(err);
@@ -554,12 +532,7 @@
             </div>
             <div class="admin-input-group">
               <label>Banner Image Path</label>
-              <div style="display: flex; gap: 0.5rem; align-items: center; width: 100%;">
-                <input type="text" id="project-${idx}-banner-path-input" class="admin-input" value="${proj.bannerImage || ''}" oninput="updateProjectField(${idx}, 'bannerImage', this.value); updateBannerPreview(${idx}, this.value)" style="flex-grow: 1;">
-                <div id="project-${idx}-banner-preview" style="width: 2.5rem; height: 2.5rem; border-radius: 0.5rem; border: 1px solid var(--border); overflow: hidden; background: #eee; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
-                  ${proj.bannerImage ? `<img src="${proj.bannerImage}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='';">` : '<span style="font-size: 1.25rem;">🖼️</span>'}
-                </div>
-              </div>
+              <input type="text" class="admin-input" value="${proj.bannerImage || ''}" oninput="updateProjectField(${idx}, 'bannerImage', this.value)">
             </div>
             <div class="admin-input-group">
               <label>Color Marker Style (CSS Class)</label>
@@ -579,28 +552,6 @@
                 <span class="admin-slider"></span>
               </label>
               <span style="font-weight: 700; font-size: 0.875rem;">DISPLAY "VIRAL" RIBBON BADGE</span>
-            </div>
-          </div>
-
-          <!-- AI Image Generation Section -->
-          <div class="sub-list-card" style="background: rgba(255, 104, 175, 0.05); border: 1px dashed var(--brand-pink);">
-            <div class="admin-label-row" style="margin-bottom: 0.75rem;">
-              <span style="font-size: 0.875rem; font-weight: 800; color: var(--foreground); display: flex; align-items: center; gap: 0.35rem;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand-pink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
-                AI BANNER GENERATOR (1024 × 1024)
-              </span>
-              <span style="font-size: 0.75rem; font-weight: 600; color: var(--muted);">Powered by Gemini / Imagen 3</span>
-            </div>
-            <div style="display: flex; gap: 0.5rem; flex-direction: column;">
-              <div style="display: flex; gap: 0.5rem; width: 100%;">
-                <input type="text" id="project-${idx}-prompt" class="admin-input" placeholder="Describe the banner image (e.g., A minimalist pastel painting of a code terminal...)" style="flex-grow: 1;">
-                <button class="admin-btn admin-btn-primary" id="project-${idx}-generate-btn" style="width: auto; padding: 0.5rem 1.25rem; font-weight: 700; background: var(--brand-pink); border-color: var(--brand-pink); color: white;" onclick="window.generateAiBanner(${idx})">
-                  Generate
-                </button>
-              </div>
-              <div id="project-${idx}-generation-status" style="font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-top: 0.25rem; display: none;">
-                Generating image, please wait...
-              </div>
             </div>
           </div>
           
@@ -671,85 +622,6 @@
     window.updateProjectField = (idx, field, val) => {
       localDatabaseState.projects[idx][field] = val;
       markDirty();
-    };
-
-    window.updateBannerPreview = (idx, val) => {
-      const previewDiv = document.getElementById(`project-${idx}-banner-preview`);
-      if (previewDiv) {
-        if (val) {
-          previewDiv.innerHTML = `<img src="${val}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='';">`;
-        } else {
-          previewDiv.innerHTML = `<span style="font-size: 1.25rem;">🖼️</span>`;
-        }
-      }
-    };
-
-    window.generateAiBanner = async (idx) => {
-      const promptInput = document.getElementById(`project-${idx}-prompt`);
-      const generateBtn = document.getElementById(`project-${idx}-generate-btn`);
-      const statusDiv = document.getElementById(`project-${idx}-generation-status`);
-      
-      const prompt = promptInput.value.trim();
-      if (!prompt) {
-        alert("Please enter a prompt description to generate an image.");
-        return;
-      }
-      
-      generateBtn.disabled = true;
-      generateBtn.innerText = "Generating...";
-      statusDiv.style.display = "block";
-      statusDiv.style.color = "var(--muted)";
-      statusDiv.innerText = "✨ Contacting AI service and generating 1024x1024 banner image...";
-
-      const geminiKey = localStorage.getItem('gemini_api_key') || '';
-
-      try {
-        const response = await fetch('/api/generate-image', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-admin-password': activeToken,
-            'x-gemini-api-key': geminiKey
-          },
-          body: JSON.stringify({ prompt })
-        });
-        
-        const result = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(result.error || `Server returned ${response.status}`);
-        }
-        
-        if (result.success && result.imagePath) {
-          localDatabaseState.projects[idx].bannerImage = result.imagePath;
-          
-          const bannerInput = document.getElementById(`project-${idx}-banner-path-input`);
-          if (bannerInput) {
-            bannerInput.value = result.imagePath;
-          }
-          
-          window.updateBannerPreview(idx, result.imagePath);
-          
-          if (result.isFallback) {
-            statusDiv.style.color = "#d97706"; // Amber / Warning
-            statusDiv.innerText = `⚠️ Free Gemini key has 0 image quota & Pollinations rate-limited. Used curated premium design banner. (Upgrade to paid Gemini plan for custom AI images).`;
-          } else {
-            statusDiv.style.color = "#10b981"; // green
-            statusDiv.innerText = `✓ Successfully generated via ${result.model}! ${result.fallbackMode === 'base64' ? '(Saved as Base64 fallback)' : ''}`;
-          }
-          
-          markDirty();
-        } else {
-          throw new Error("No image path returned from server.");
-        }
-      } catch (err) {
-        console.error("AI Generation Error:", err);
-        statusDiv.style.color = "#ef4444"; // red
-        statusDiv.innerText = `❌ Error: ${err.message}`;
-      } finally {
-        generateBtn.disabled = false;
-        generateBtn.innerText = "Generate";
-      }
     };
 
     window.deleteProject = (idx) => {
