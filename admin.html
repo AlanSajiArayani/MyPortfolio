@@ -7,6 +7,8 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="stylesheet" href="index.css">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@400;700;800&family=Baloo+Chettan+2:wght@400;700;800&family=Caveat:wght@700&family=Chilanka&family=Gayathri:wght@400;700&family=Manjari:wght@400;700&family=Montserrat:wght@400;700;900&family=Outfit:wght@400;500;700;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Grotesk:wght@400;700&family=Syne:wght@700;800&display=swap');
+    
     /* Custom style overrides to perfect the Admin interface spacing */
     .admin-container {
       max-width: 64rem;
@@ -137,19 +139,38 @@
             <input type="text" id="bio-name" class="admin-input">
           </div>
           <div class="admin-input-group">
-            <label for="bio-logo-name">Navigation Logo Name</label>
-            <input type="text" id="bio-logo-name" class="admin-input">
+            <label for="bio-name-font">Developer Name Font</label>
+            <select id="bio-name-font" class="admin-input" style="font-weight: 700;">
+              <optgroup label="English Fonts">
+                <option value="Outfit" style="font-family: 'Outfit', sans-serif;">Outfit</option>
+                <option value="Playfair Display" style="font-family: 'Playfair Display', serif;">Playfair Display</option>
+                <option value="Space Grotesk" style="font-family: 'Space Grotesk', sans-serif;">Space Grotesk</option>
+                <option value="Montserrat" style="font-family: 'Montserrat', sans-serif;">Montserrat</option>
+                <option value="Syne" style="font-family: 'Syne', sans-serif;">Syne</option>
+              </optgroup>
+              <optgroup label="Malayalam Fonts">
+                <option value="Baloo Chettan 2" style="font-family: 'Baloo Chettan 2', sans-serif;">Baloo Chettan 2</option>
+                <option value="Manjari" style="font-family: 'Manjari', sans-serif;">Manjari</option>
+                <option value="Gayathri" style="font-family: 'Gayathri', sans-serif;">Gayathri</option>
+                <option value="Chilanka" style="font-family: 'Chilanka', sans-serif;">Chilanka</option>
+                <option value="Anek Malayalam" style="font-family: 'Anek Malayalam', sans-serif;">Anek Malayalam</option>
+              </optgroup>
+            </select>
           </div>
         </div>
         <div class="admin-grid-2">
           <div class="admin-input-group">
+            <label for="bio-logo-name">Navigation Logo Name</label>
+            <input type="text" id="bio-logo-name" class="admin-input">
+          </div>
+          <div class="admin-input-group">
             <label for="bio-polaroid-name">Polaroid Display Name</label>
             <input type="text" id="bio-polaroid-name" class="admin-input">
           </div>
-          <div class="admin-input-group">
-            <label for="bio-avatar">Avatar Image URL/Path</label>
-            <input type="text" id="bio-avatar" class="admin-input">
-          </div>
+        </div>
+        <div class="admin-input-group">
+          <label for="bio-avatar">Avatar Image URL/Path</label>
+          <input type="text" id="bio-avatar" class="admin-input">
         </div>
         <div class="admin-input-group">
           <label for="bio-headline">Headline Badge</label>
@@ -399,6 +420,14 @@
       document.getElementById('bio-email').value = localDatabaseState.bio.email;
       document.getElementById('bio-linkedin-cta').value = localDatabaseState.bio.linkedinCta;
 
+      const fontVal = localDatabaseState.bio.nameFont || 'Outfit';
+      const fontSelect = document.getElementById('bio-name-font');
+      fontSelect.value = fontVal;
+      fontSelect.style.fontFamily = `'${fontVal}', sans-serif`;
+      fontSelect.addEventListener('change', () => {
+        fontSelect.style.fontFamily = `'${fontSelect.value}', sans-serif`;
+      });
+
       document.getElementById('social-github').value = localDatabaseState.socials.github;
       document.getElementById('social-linkedin').value = localDatabaseState.socials.linkedin;
       document.getElementById('social-twitter').value = localDatabaseState.socials.twitter;
@@ -406,7 +435,7 @@
 
       // Attach event listeners to general inputs
       const fields = [
-        'bio-name', 'bio-logo-name', 'bio-polaroid-name', 'bio-avatar', 'bio-headline', 'bio-cursive', 'bio-desc', 'bio-email', 
+        'bio-name', 'bio-logo-name', 'bio-name-font', 'bio-polaroid-name', 'bio-avatar', 'bio-headline', 'bio-cursive', 'bio-desc', 'bio-email', 
         'bio-linkedin-cta', 'social-github', 'social-linkedin', 'social-twitter', 'social-instagram'
       ];
       fields.forEach(f => {
@@ -417,6 +446,7 @@
     function updateGeneralState() {
       localDatabaseState.bio.name = document.getElementById('bio-name').value.trim();
       localDatabaseState.bio.logoName = document.getElementById('bio-logo-name').value.trim();
+      localDatabaseState.bio.nameFont = document.getElementById('bio-name-font').value;
       localDatabaseState.bio.polaroidName = document.getElementById('bio-polaroid-name').value.trim();
       localDatabaseState.bio.avatar = document.getElementById('bio-avatar').value.trim();
       localDatabaseState.bio.headline = document.getElementById('bio-headline').value.trim();

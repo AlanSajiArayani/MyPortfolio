@@ -48,7 +48,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // Render database content into respective container templates
   const renderPortfolio = (data) => {
     // 1. Navigation & Profile Brand name
-    document.getElementById('nav-logo-name').innerText = data.bio.logoName || data.bio.name;
+    const fontFamilies = {
+      'Outfit': "'Outfit', 'Baloo Chettan 2', sans-serif",
+      'Playfair Display': "'Playfair Display', 'Baloo Chettan 2', serif",
+      'Space Grotesk': "'Space Grotesk', 'Baloo Chettan 2', sans-serif",
+      'Montserrat': "'Montserrat', 'Baloo Chettan 2', sans-serif",
+      'Syne': "'Syne', 'Baloo Chettan 2', sans-serif",
+      'Baloo Chettan 2': "'Baloo Chettan 2', 'Outfit', sans-serif",
+      'Manjari': "'Manjari', 'Outfit', sans-serif",
+      'Gayathri': "'Gayathri', 'Outfit', sans-serif",
+      'Chilanka': "'Chilanka', 'Outfit', sans-serif",
+      'Anek Malayalam': "'Anek Malayalam', 'Outfit', sans-serif"
+    };
+    const selectedFont = data.bio.nameFont || 'Outfit';
+    const fontStyle = fontFamilies[selectedFont] || fontFamilies['Outfit'];
+    
+    const logoEl = document.getElementById('nav-logo-name');
+    logoEl.innerText = data.bio.logoName || data.bio.name;
+    logoEl.style.fontFamily = fontStyle;
     
     // 2. Navigation Links
     document.getElementById('nav-link-github').href = data.socials.github;
@@ -58,7 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Hero Info
     document.getElementById('hero-badge-text').innerText = data.bio.headline;
-    document.getElementById('hero-title-name').innerText = data.bio.name;
+    const heroTitleEl = document.getElementById('hero-title-name');
+    heroTitleEl.innerText = data.bio.name;
+    heroTitleEl.style.fontFamily = fontStyle;
     document.getElementById('hero-subtitle-text').innerText = data.bio.cursiveSubtitle;
     document.getElementById('hero-description').innerText = data.bio.description;
     
