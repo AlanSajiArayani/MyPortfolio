@@ -500,6 +500,9 @@
         id: "project-" + Date.now(),
         title: "New Project",
         link: "#",
+        showGithub: true,
+        demoLink: "#",
+        showDemo: true,
         bannerImage: "images/portfolio.png",
         viral: false,
         colorClass: "pink-marker",
@@ -532,12 +535,30 @@
               <input type="text" class="admin-input" value="${proj.title || ''}" oninput="updateProjectField(${idx}, 'title', this.value)">
             </div>
             <div class="admin-input-group">
-              <label>Project Link / Repository</label>
-              <input type="text" class="admin-input" value="${proj.link || ''}" oninput="updateProjectField(${idx}, 'link', this.value)">
-            </div>
-            <div class="admin-input-group">
               <label>Banner Image Path</label>
               <input type="text" class="admin-input" value="${proj.bannerImage || ''}" oninput="updateProjectField(${idx}, 'bannerImage', this.value)">
+            </div>
+            <div class="admin-input-group">
+              <label>GitHub Repository Link</label>
+              <input type="text" class="admin-input" value="${proj.link || ''}" oninput="updateProjectField(${idx}, 'link', this.value)">
+            </div>
+            <div class="admin-switch-container">
+              <label class="admin-switch">
+                <input type="checkbox" ${proj.showGithub !== false ? 'checked' : ''} onchange="updateProjectField(${idx}, 'showGithub', this.checked)">
+                <span class="admin-slider"></span>
+              </label>
+              <span style="font-weight: 700; font-size: 0.875rem;">SHOW GITHUB LINK</span>
+            </div>
+            <div class="admin-input-group">
+              <label>Live Demo Link</label>
+              <input type="text" class="admin-input" value="${proj.demoLink || ''}" oninput="updateProjectField(${idx}, 'demoLink', this.value)">
+            </div>
+            <div class="admin-switch-container">
+              <label class="admin-switch">
+                <input type="checkbox" ${proj.showDemo !== false ? 'checked' : ''} onchange="updateProjectField(${idx}, 'showDemo', this.checked)">
+                <span class="admin-slider"></span>
+              </label>
+              <span style="font-weight: 700; font-size: 0.875rem;">SHOW LIVE DEMO LINK</span>
             </div>
             <div class="admin-input-group">
               <label>Color Marker Style (CSS Class)</label>
@@ -551,7 +572,7 @@
               <label>Background Opacity Fill Color (CSS)</label>
               <input type="text" class="admin-input" value="${proj.bgColor || ''}" oninput="updateProjectField(${idx}, 'bgColor', this.value)" placeholder="rgba(255, 104, 175, 0.1)">
             </div>
-            <div class="admin-switch-container">
+            <div class="admin-switch-container" style="grid-column: span 2;">
               <label class="admin-switch">
                 <input type="checkbox" ${proj.viral ? 'checked' : ''} onchange="updateProjectField(${idx}, 'viral', this.checked)">
                 <span class="admin-slider"></span>
